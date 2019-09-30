@@ -1,0 +1,8 @@
+{
+  "SmtpConfiguration": {
+    "Server": "smtp.myserver.com",
+    "Port": 25,
+    "Username": "smtpusername",
+    "Password": "smtppassword"
+  }
+}
