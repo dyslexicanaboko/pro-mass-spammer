@@ -47,6 +47,10 @@ namespace ProMassSpammer.Core
 
         internal static DependencyResolver Resolver { get; private set; }
 
+        /// <summary>
+        /// Setup dependencies that cannot be injected immediately. These are all part of the factory below.
+        /// </summary>
+        /// <param name="container">The container should only be passed for debug.</param>
         private static void SetupDependencyResolver(Container container)
         {
             if (container == null)
