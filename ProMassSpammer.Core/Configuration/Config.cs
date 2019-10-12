@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.Extensions.Configuration;
+
 //using System.Configuration;
 //using System.Linq;
 
@@ -93,6 +95,28 @@ namespace ProMassSpammer.Core.Configuration
             lst.Add(DevSmsPhoneNumber);
 
             return lst;
+        }
+
+        public static SmtpConfiguration GetSmtpConfig()
+        {
+            var svc = new Data.Config("SmtpConfiguration.json");
+
+            var c = svc.BuildConfigs();
+
+            var sc = c.GetSection("SmtpConfiguration").Get<SmtpConfiguration>();
+
+            return sc;
+        }
+
+        public static SmsConfiguration GetSmsConfig()
+        {
+            var svc = new Data.Config("SmsConfiguration.json");
+
+            var c = svc.BuildConfigs();
+
+            var sc = c.GetSection("SmsConfiguration").Get<SmsConfiguration>();
+
+            return sc;
         }
     }
 }
