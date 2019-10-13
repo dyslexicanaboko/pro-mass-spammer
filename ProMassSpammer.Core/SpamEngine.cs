@@ -146,9 +146,9 @@ namespace ProMassSpammer.Core
             massComm.StatusMessage = $"Sent: {sent} Unsent: {fail} Total: {count}";
 
             MassCommStatistics.UpdateMassCommCounters(massComm);
-            MassCommStatistics.McdTotalProcessed += count;
-            MassCommStatistics.McdTotalSentFlawlessly += sent;
-            MassCommStatistics.McdTotalErrors += fail;
+            MassCommStatistics.RecipientTotalProcessed += count;
+            MassCommStatistics.RecipientTotalSentFlawlessly += sent;
+            MassCommStatistics.RecipientTotalErrors += fail;
         }
 
         private static void Fail(MassCommunication massComm, Exception reason)
