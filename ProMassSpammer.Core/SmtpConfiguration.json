@@ -2,6 +2,7 @@
   "SmtpConfiguration": {
     "Server": "smtp.myserver.com",
     "Port": 25,
+    "RequiredCredentials": false, 
     "Username": "smtpusername",
     "Password": "smtppassword"
   }

@@ -26,7 +26,7 @@ namespace ProMassSpammer.Core
         public void Bootstrap()
         {
             _container.Register<ISmtpConfiguration>(Config.GetSmtpConfig, Lifestyle.Singleton);
-            _container.Register<ISmtpClient, SmtpClientMs>(Lifestyle.Transient);
+            _container.Register<ISmtpClient, SmtpClientMailKit>(Lifestyle.Transient);
 
             _container.Register<ISmsConfiguration>(Config.GetSmsConfig, Lifestyle.Singleton);
             _container.Register<ISmsClient, SmsTwilioClient>(Lifestyle.Transient);

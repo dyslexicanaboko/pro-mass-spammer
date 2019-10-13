@@ -6,12 +6,12 @@ using ProMassSpammer.Core.Configuration;
 namespace ProMassSpammer.Core.Transmission.Smtp
 {
     //https://dotnetcoretutorials.com/2017/11/02/using-mailkit-send-receive-email-asp-net-core/
-    public class SmtpClientMs
+    public class SmtpClientMailKit
         : ISmtpClient
     {
         private readonly ISmtpConfiguration _configuration;
 
-        public SmtpClientMs(ISmtpConfiguration configuration)
+        public SmtpClientMailKit(ISmtpConfiguration configuration)
         {
             _configuration = configuration;
         }
@@ -35,9 +35,12 @@ namespace ProMassSpammer.Core.Transmission.Smtp
             using (var client = new SmtpClient())
             {
                 client.Connect(_configuration.Server, _configuration.Port);
- 
-                //client.Authenticate(_emailConfiguration.SmtpUsername, _emailConfiguration.SmtpPassword);
- 
+
+                if (_configuration.CredentialsRequired)
+                {
+                    client.Authenticate(_configuration.Username, _configuration.Password);
+                }
+
                 client.Send(message);
  
                 client.Disconnect(true);
