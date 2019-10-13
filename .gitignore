@@ -355,3 +355,4 @@ MigrationBackup/
 *.rar
 *.bak
 *.out
+**/DoNotUpload/

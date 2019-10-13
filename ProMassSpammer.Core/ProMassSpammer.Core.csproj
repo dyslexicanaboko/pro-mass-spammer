@@ -5,10 +5,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="SmsConfiguration.json" />
     <None Remove="SmtpConfiguration.json" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="SmsConfiguration.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="SmtpConfiguration.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -17,6 +21,7 @@
   <ItemGroup>
     <PackageReference Include="MailKit" Version="2.3.1.6" />
     <PackageReference Include="SimpleInjector" Version="4.7.0" />
+    <PackageReference Include="Twilio" Version="5.33.0" />
   </ItemGroup>
 
   <ItemGroup>

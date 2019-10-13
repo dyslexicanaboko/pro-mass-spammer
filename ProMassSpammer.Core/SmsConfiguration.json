@@ -1,0 +1,7 @@
+{
+  "C": "This is a Twillio example",
+  "SmsConfiguration": {
+    "AccountSid": "TwilioAccountSidHere",
+    "AuthenticationToken": "TwilioAuthenticationTokenHere"
+  }
+}
