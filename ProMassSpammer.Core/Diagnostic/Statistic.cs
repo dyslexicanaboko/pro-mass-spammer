@@ -1,6 +1,7 @@
 ﻿using ProMassSpammer.Data.Entities;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.Serialization;
 
@@ -20,13 +21,13 @@ namespace ProMassSpammer.Core.Diagnostic
             ServiceStartedOn = DateTime.Now;
         }
 
-        [DataMember] public DateTime ServiceStartedOn { get; set; }
+        [DataMember]
+        public DateTime ServiceStartedOn { get; set; }
 
         [DataMember]
         public double ServiceTotalUpTimeInMinutes
         {
             get => GetTotalUpTime().TotalMinutes;
-
 
             set
             {
@@ -39,34 +40,44 @@ namespace ProMassSpammer.Core.Diagnostic
         {
             get => GetTotalUpTime().ToString("ddd' days, 'hh' hours 'mm' minutes 'ss' seconds'");
 
-
             set
             {
                 var ignore = value;
             }
         }
 
-        [DataMember] public int ServiceTotalLoggedErrors { get; set; }
+        [DataMember]
+        public int ServiceTotalLoggedErrors { get; set; }
 
-        [DataMember] public int ServiceTotalCycles { get; set; }
+        [DataMember]
+        public int ServiceTotalCycles { get; set; }
 
-        [DataMember] public int ServiceUninterruptedSleepCycles { get; set; }
+        [DataMember]
+        public int ServiceUninterruptedSleepCycles { get; set; }
 
-        [DataMember] public double ServiceMcdPerMinute { get; set; }
+        [DataMember]
+        public double ServiceRecipientPerMinute { get; set; }
 
-        [DataMember] public int McTotalProcessed { get; set; }
+        [DataMember]
+        public int McTotalProcessed { get; set; }
 
-        [DataMember] public int McTotalSentFlawlessly { get; set; }
+        [DataMember]
+        public int McTotalSentFlawlessly { get; set; }
 
-        [DataMember] public int McTotalSentWithError { get; set; }
+        [DataMember]
+        public int McTotalSentWithError { get; set; }
 
-        [DataMember] public int McTotalHardFailures { get; set; }
+        [DataMember]
+        public int McTotalHardFailures { get; set; }
 
-        [DataMember] public int McdTotalSentFlawlessly { get; set; }
+        [DataMember]
+        public int RecipientTotalSentFlawlessly { get; set; }
 
-        [DataMember] public int McdTotalErrors { get; set; }
+        [DataMember]
+        public int RecipientTotalErrors { get; set; }
 
-        [DataMember] public int McdTotalProcessed { get; set; }
+        [DataMember]
+        public int RecipientTotalProcessed { get; set; }
 
         public bool IsStopWatchStarted { get; private set; }
 
@@ -87,6 +98,7 @@ namespace ProMassSpammer.Core.Diagnostic
             }
             catch
             {
+                //Trapping errors on purpose
             }
         }
 
@@ -110,12 +122,6 @@ namespace ProMassSpammer.Core.Diagnostic
             }
         }
 
-
-        public void AddJournalEntry(Exception exception)
-        {
-            AddJournalEntry("LogDAL Failure - Ex: " + exception.GetType().Name + " ExMsg: " + exception.Message);
-        }
-
         public void AddJournalEntry(string entry)
         {
             try
@@ -128,18 +134,24 @@ namespace ProMassSpammer.Core.Diagnostic
             }
             catch
             {
+                //Trapping errors on purpose
             }
         }
 
         public List<string> GetJournalEntries(int entries = JournalEntriesGetSize)
         {
             if (entries <= 0 || entries > JournalEntriesMax)
+            {
                 entries = JournalEntriesGetSize;
+            }
 
-
-            return Journal.OrderByDescending(x => x.CreatedOnUtc)
-                .Select(x => x.CreatedOnUtc.ToString() + " = " + x.Message)
+            var lst = Journal
+                .OrderByDescending(x => x.CreatedOnUtc)
+                .Take(entries)
+                .Select(x => x.CreatedOnUtc.ToString(CultureInfo.InvariantCulture) + " = " + x.Message)
                 .ToList();
+
+            return lst;
         }
 
         private TimeSpan GetTotalUpTime()
@@ -151,14 +163,14 @@ namespace ProMassSpammer.Core.Diagnostic
 
         private DateTime _dtmStart;
         private DateTime _dtmStop;
-        private double _mcdStart;
-        private double _mcdStop;
+        private double _recipientStart;
+        private double _recipientStop;
 
         public void StopWatchBegin()
         {
             IsStopWatchStarted = true;
             _dtmStart = DateTime.Now;
-            _mcdStart = McdTotalProcessed;
+            _recipientStart = RecipientTotalProcessed;
         }
 
         public void StopWatchEnd()
@@ -167,19 +179,19 @@ namespace ProMassSpammer.Core.Diagnostic
 
             _dtmStop = DateTime.Now;
 
-
-            _mcdStop = McdTotalProcessed - _mcdStart;
-
+            _recipientStop = RecipientTotalProcessed - _recipientStart;
 
             var ts = _dtmStop - _dtmStart;
 
-
             if (ts.TotalMinutes == 0)
-                ServiceMcdPerMinute = 0;
+            {
+                ServiceRecipientPerMinute = 0;
+            }
             else
-                ServiceMcdPerMinute = _mcdStop / ts.TotalMinutes;
+            {
+                ServiceRecipientPerMinute = _recipientStop / ts.TotalMinutes;
+            }
         }
-
         #endregion
     }
 }
