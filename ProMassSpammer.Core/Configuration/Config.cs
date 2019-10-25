@@ -15,25 +15,12 @@ namespace ProMassSpammer.Core.Configuration
 
         private static string _applicationBaseDirectory;
 
-
-        private static string _devSmsPhoneNumber;
-
-
         public static string ApplicationBaseDirectory =>
             _applicationBaseDirectory ?? (_applicationBaseDirectory = AppDomain.CurrentDomain.BaseDirectory);
-
 
         public static string ConnectionString => GetConnectionString(ConnectionStringNameMain);
 
         public static string ConnectionStringLogging => GetConnectionString(ConnectionStringNameLogging);
-
-        public static string SmsRouterToken => GetRequiredConfigValue("SmsRouterToken");
-
-        public static string SmsRouterBaseUrl => GetRequiredConfigValue("SmsRouterBaseUrl");
-
-        public static string DevSmsPhoneNumber =>
-            _devSmsPhoneNumber ?? (_devSmsPhoneNumber = GetOptionalConfigValue("DevSmsPhoneNumber"));
-
 
         private static string GetRawConfigValue(string keyName)
         {
@@ -41,7 +28,6 @@ namespace ProMassSpammer.Core.Configuration
 
             //return ConfigurationManager.AppSettings[keyName];
         }
-
 
         public static string GetRequiredConfigValue(string keyName)
         {
@@ -52,7 +38,6 @@ namespace ProMassSpammer.Core.Configuration
             return strValue;
         }
 
-
         private static bool IsKeyFound(string keyName)
         {
             throw new NotImplementedException();
@@ -62,14 +47,12 @@ namespace ProMassSpammer.Core.Configuration
             //return isFound;
         }
 
-
         public static string GetOptionalConfigValue(string keyName)
         {
             if (!IsKeyFound(keyName)) throw new ConfigurationException(keyName, true);
 
             return GetRawConfigValue(keyName);
         }
-
 
         public static string GetConnectionString(string name)
         {
@@ -82,17 +65,12 @@ namespace ProMassSpammer.Core.Configuration
             //return strCs;
         }
 
-
         public static List<object> ValidateConfiguration()
         {
             var lst = new List<object>();
 
-
             lst.Add(ConnectionString);
             lst.Add(ConnectionStringLogging);
-            lst.Add(SmsRouterBaseUrl);
-            lst.Add(SmsRouterToken);
-            lst.Add(DevSmsPhoneNumber);
 
             return lst;
         }
@@ -115,6 +93,17 @@ namespace ProMassSpammer.Core.Configuration
             var c = svc.BuildConfigs();
 
             var sc = c.GetSection("SmsConfiguration").Get<SmsConfiguration>();
+
+            return sc;
+        }
+
+        public static IPushNotificationConfiguration GetPushNotificationConfig()
+        {
+            var svc = new Data.Config("PushNotificationConfiguration.json");
+
+            var c = svc.BuildConfigs();
+
+            var sc = c.GetSection("PushNotificationConfiguration").Get<PushNotificationConfiguration>();
 
             return sc;
         }

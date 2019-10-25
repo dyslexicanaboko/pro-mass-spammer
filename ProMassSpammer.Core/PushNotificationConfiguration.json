@@ -1,0 +1,6 @@
+{
+  "C": "URL to the Push Notification Hub - using SignalR in this example.",
+  "PushNotificationConfiguration": {
+    "HubUrl": "Hub URL goes here"
+  }
+}

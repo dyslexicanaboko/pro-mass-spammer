@@ -2,6 +2,8 @@
 {
     public interface IPushNotificationClient
     {
+        void ConnectToHub();
+
         void Send(Notification notification);
     }
 }

@@ -1,11 +1,31 @@
 ﻿using Microsoft.AspNetCore.SignalR.Client;
-using System;
+using ProMassSpammer.Core.Configuration;
 
 namespace ProMassSpammer.Core.Transmission.PushNotification
 {
     public class SignalRClient
         : IPushNotificationClient
     {
+        private readonly IPushNotificationConfiguration _configuration;
+        private HubConnection _connection;
+
+        public SignalRClient(IPushNotificationConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
+        public void ConnectToHub()
+        {
+            _connection = new HubConnectionBuilder()
+                .WithUrl(_configuration.HubUrl)
+                .WithAutomaticReconnect()
+                .Build();
+
+            var t = _connection.StartAsync();
+
+            t.Wait();
+        }
+
         public void Send(Notification notification)
         {
             SendMessageToHub(notification);
@@ -13,26 +33,7 @@ namespace ProMassSpammer.Core.Transmission.PushNotification
 
         private async void SendMessageToHub(Notification notification)
         {
-            try
-            {
-                var url = "https://localhost:44302";
-                //var url = "https://signalrchat20191019115531.azurewebsites.net";
-            
-                var connection = new HubConnectionBuilder()
-                    .WithUrl($"{url}/chatHub")
-                    .WithAutomaticReconnect()
-                    .Build();
-
-                var t = connection.StartAsync();
-
-                t.Wait();
-
-                await connection.InvokeAsync("SendMessage", "ProMassSpammer!", notification.Message);
-            }
-            catch (Exception ex)
-            {
-                if (true) ;
-            }
+            await _connection.InvokeAsync("SendMessage", "ProMassSpammer!", notification.Message);
         }
     }
 }

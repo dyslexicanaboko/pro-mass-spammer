@@ -6,14 +6,11 @@ namespace ProMassSpammer.Core.Transmission
 {
     public class TransmissionService
     {
-        private MassCommunication _massCommunication;
         private readonly TransmissionBase _transmission;
 
         public TransmissionService(MassCommunication massCommunication)
         {
-            _massCommunication = massCommunication;
-
-            _transmission = LoadTransmissionMethod(_massCommunication);
+            _transmission = LoadTransmissionMethod(massCommunication);
         }
 
         public void PrepareForSend()
@@ -41,6 +38,9 @@ namespace ProMassSpammer.Core.Transmission
                     break;
                 case DeliveryMethod.DeliveryMethodEnum.Sms:
                     obj = new TransmissionBySms(massComm);
+                    break;
+                case DeliveryMethod.DeliveryMethodEnum.PushNotification:
+                    obj = new TransmissionByPushNotification(massComm);
                     break;
 
                 default:

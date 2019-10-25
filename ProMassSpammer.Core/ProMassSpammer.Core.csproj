@@ -5,11 +5,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="PushNotificationConfiguration.json" />
     <None Remove="SmsConfiguration.json" />
     <None Remove="SmtpConfiguration.json" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="PushNotificationConfiguration.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="SmsConfiguration.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

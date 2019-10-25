@@ -1,4 +1,5 @@
 ﻿using ProMassSpammer.Core.Configuration;
+using ProMassSpammer.Core.Transmission.PushNotification;
 using ProMassSpammer.Core.Transmission.Sms;
 using ProMassSpammer.Core.Transmission.Smtp;
 using SimpleInjector;
@@ -30,6 +31,9 @@ namespace ProMassSpammer.Core
 
             _container.Register<ISmsConfiguration>(Config.GetSmsConfig, Lifestyle.Singleton);
             _container.Register<ISmsClient, SmsTwilioClient>(Lifestyle.Transient);
+
+            _container.Register<IPushNotificationConfiguration>(Config.GetPushNotificationConfig, Lifestyle.Singleton);
+            _container.Register<IPushNotificationClient, SignalRClient>(Lifestyle.Transient);
 
             _container.Verify();
         }
