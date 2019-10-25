@@ -5,6 +5,7 @@ using ProMassSpammer.Data.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace ProMassSpammer.Core.Transmission
@@ -12,6 +13,9 @@ namespace ProMassSpammer.Core.Transmission
     public class TransmissionBySms
         : TransmissionBase
     {
+        //http://regexlib.com/Search.aspx?k=phone&AspxAutoDetectCookieSupport=1
+        private readonly Regex _regex = new Regex(@"(^\+[0-9]{2}|^\+[0-9]{2}\(0\)|^\(\+[0-9]{2}\)\(0\)|^00[0-9]{2}|^0)([0-9]{9}$|[0-9\-\s]{10}$)");
+
         public TransmissionBySms(MassCommunication massCommunicaton)
             : base(massCommunicaton)
         {
@@ -33,7 +37,7 @@ namespace ProMassSpammer.Core.Transmission
                 result.IsSuccess = true;
                 result.Message = "SMS successfully sent";
             }
-            catch (InvalidEmailException iee)
+            catch (InvalidPhoneNumberException iee)
             {
                 result.IsSuccess = false;
                 result.Message = "Invalid phone number. 0x201909292330";
@@ -74,19 +78,33 @@ namespace ProMassSpammer.Core.Transmission
 
         private SmsMessage CreateTextMessage(RecipientMessage message)
         {
-            //if (!IsValidPhoneNumber(message.To))
-            //{
-            //    throw new InvalidEmailException(InvalidEmailException.AddressField.To, message.To);
-            //}
+            if (!IsValidPhoneNumber(message.To))
+            {
+                throw new InvalidPhoneNumberException(message.To);
+            }
 
             var text = new SmsMessage
             {
-                Body = MassCommunication.Body,
+                Body = message.Body,
                 To = message.To,
                 From = message.From
             };
 
             return text;
+        }
+
+        private bool IsValidPhoneNumber(string phoneNumber)
+        {
+            try
+            {
+                var isMatch = _regex.IsMatch(phoneNumber);
+
+                return isMatch;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
     }
 }
